@@ -12,7 +12,7 @@ nutella.init(broker, app_id, run_id, component_id)
 
 puts "Mail bot initialization"
 
-nutella.net.handle_requests('mail/send', lambda do |request, component_id, resource_id|
+nutella.net.handle_requests('mail/send', lambda do |request, from|
 	puts "Send mail to " + request['to'] + "message: " + request['message']
 
 	{"status" => "ok"}
