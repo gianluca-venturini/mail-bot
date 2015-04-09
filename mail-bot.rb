@@ -4,12 +4,17 @@ require 'mandrill'
 m = Mandrill::API.new 'i4frQYcTBMyZ6bYyLkEVOQ'
 
 
+
+# Parse command line arguments
+broker, app_id, run_id = nutella.parse_args ARGV
+# Extract the component_id
+component_id = nutella.extract_component_id
 # Initialize nutella
-nutella.init("crepe", "localhost", "mail-bot")
+nutella.init(broker, app_id, run_id, component_id)
 
 puts "Mail bot initialization"
 
-nutella.net.handle_requests('mail/send', lambda do |request, component_id, resource_id|
+nutella.net.handle_requests('mail/send', lambda do |request, from|
 	puts "Send mail to " + request['to'] + "message: " + request['message']
 
   template_name = 'Nutella subscription'
