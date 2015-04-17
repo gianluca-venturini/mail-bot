@@ -15,19 +15,29 @@ nutella.init(broker, app_id, run_id, component_id)
 puts "Mail bot initialization"
 
 nutella.net.handle_requests('mail/send_subscription', lambda do |request, from|
-	puts "Send mail to " + request['to'] + "message: " + request['componentName']
+  object = request['application']
+
+  if request['instance'] != nil
+    object = object + ' > ' + request['instance']
+    if request['component'] != nil
+      object = object + ' > ' + request['component']
+    end
+  end
+
+	puts "Send mail to " + request['to'] + "message: " + object
+
 
   template_name = 'Nutella subscription'
   template_content = [
       {
           :name=> 'main',
           :content=> "Congratulation: subscription to component
-                    <b>#{request['componentName']}</b>
+                    <b>#{object}</b>
                     has been succeded."
       }
   ]
   message = {
-      :subject=> 'Notification subscription success',
+      :subject=> "Subscription to #{object}",
       :from_name=> 'Nutella Monitoring Interface',
       :to=>[
           {
@@ -46,19 +56,28 @@ nutella.net.handle_requests('mail/send_subscription', lambda do |request, from|
 end)
 
 nutella.net.handle_requests('mail/send_notification', lambda do |request, from|
-  puts "Send mail to " + request['to'] + "message: " + request['componentName']
+  object = request['application']
 
-  template_name = 'Nutella subscription'
+  if request['instance'] != nil
+    object = object + ' > ' + request['instance']
+    if request['component'] != nil
+      object = object + ' > ' + request['component']
+    end
+  end
+
+  puts "Send mail to " + request['to'] + "message: " + object
+
+  template_name = 'Nutella alert'
   template_content = [
       {
           :name=> 'main',
-          :content=> "Congratulation: subscription to component
-                      <b>#{request['componentName']}</b>
-                      has been succeded."
+          :content=> "Attention: component
+                      <b>#{object}</b>
+                      had a problem and went down."
       }
   ]
   message = {
-      :subject=> 'Notification subscription success',
+      :subject=> "Alert: #{object} went down",
       :from_name=> 'Nutella Monitoring Interface',
       :to=>[
           {
